@@ -33,12 +33,12 @@ async function confirmBookingAction(formData: FormData) {
   "use server";
 
   const token = (await cookies()).get("bn_token")?.value;
-  if (!token) return { success: false, message: "Sesi login tidak ditemukan" };
+  if (!token) return;
 
   const bookingId = String(formData.get("bookingId") ?? "");
-  if (!bookingId) return { success: false, message: "Booking ID tidak valid" };
+  if (!bookingId) return;
 
-  const response = await fetch(
+  await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/bookings/${bookingId}/confirm`,
     {
       method: "PATCH",
@@ -48,25 +48,20 @@ async function confirmBookingAction(formData: FormData) {
     },
   );
 
-  if (!response.ok) {
-    return { success: false, message: "Gagal mengonfirmasi booking" };
-  }
-
   revalidatePath("/admin/bookings");
   revalidatePath("/admin/dashboard");
-  return { success: true, message: "Booking berhasil dikonfirmasi" };
 }
 
 async function cancelBookingAction(formData: FormData) {
   "use server";
 
   const token = (await cookies()).get("bn_token")?.value;
-  if (!token) return { success: false, message: "Sesi login tidak ditemukan" };
+  if (!token) return;
 
   const bookingId = String(formData.get("bookingId") ?? "");
-  if (!bookingId) return { success: false, message: "Booking ID tidak valid" };
+  if (!bookingId) return;
 
-  const response = await fetch(
+  await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/bookings/${bookingId}/cancel`,
     {
       method: "PATCH",
@@ -76,13 +71,8 @@ async function cancelBookingAction(formData: FormData) {
     },
   );
 
-  if (!response.ok) {
-    return { success: false, message: "Gagal membatalkan booking" };
-  }
-
   revalidatePath("/admin/bookings");
   revalidatePath("/admin/dashboard");
-  return { success: true, message: "Booking berhasil dibatalkan" };
 }
 
 export default async function AdminBookingsPage() {
