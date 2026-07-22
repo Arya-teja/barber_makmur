@@ -1,10 +1,10 @@
+import type { PaymentStatus } from "./payment";
+
 export type BookingStatus =
   | "pending_payment"
   | "waiting_confirmation"
   | "confirmed"
   | "cancelled";
-
-export type PaymentStatus = "waiting" | "paid" | "failed";
 
 export interface BookingItem {
   id: string;
