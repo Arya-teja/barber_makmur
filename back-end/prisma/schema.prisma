@@ -1,0 +1,149 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+
+
+enum Membership {
+  STANDARD
+  GOLD
+  PLATINUM
+}
+
+enum BarberStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum BookingStatus {
+  PENDING_PAYMENT
+  WAITING_CONFIRMATION
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  WAITING
+  PAID
+  SUCCESS
+  FAILED
+}
+
+model User {
+  id           String    @id @default(uuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  phone        String?
+  role         Role      @default(USER)
+  membership   Membership @default(STANDARD)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  bookings     Booking[]
+}
+
+model Service {
+  id              String    @id @default(uuid())
+  name            String
+  description     String
+  price           Int
+
+  durationMinutes Int
+  category        String
+  status          String
+  imageURL      String
+  highlights      String[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  bookings        Booking[]
+  // packages        ServicePackage[]
+}
+
+// model ServicePackage {
+//   id          String   @id @default(uuid())
+//   serviceId   String
+//   packageName String
+//   price       Int
+//   benefits    String[]
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+//   service     Service  @relation(fields: [serviceId], references: [id])
+// }
+
+model Barber {
+  id        String       @id @default(uuid())
+  name      String
+  status    BarberStatus @default(ACTIVE)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model Feature {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Testimonial {
+  id        String   @id @default(uuid())
+  name      String
+  role      String
+  quote     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LandingMetric {
+  id        String   @id @default(uuid())
+  category  String
+  label     String
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Booking {
+  id           String        @id @default(uuid())
+  userId       String
+  serviceId    String
+  barberName   String
+  date         String
+  time         String
+  notes        String?
+  status       BookingStatus @default(PENDING_PAYMENT)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  user         User          @relation(fields: [userId], references: [id])
+  service      Service       @relation(fields: [serviceId], references: [id])
+  payment      Payment?
+}
+
+model Payment {
+  id              String        @id @default(uuid())
+  bookingId       String        @unique
+  amount          Int
+  method          String        @default("QRIS")
+  status          PaymentStatus @default(WAITING)
+  paymentProofUrl String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  booking         Booking       @relation(fields: [bookingId], references: [id])
+}
