@@ -11,7 +11,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/lib/utils/formatters";
 
-function getServicePrice(service: { price?: number; pricePackage?: number }) {
+function getServicePrice(service: {
+  price?: number;
+  pricePackage?: number | null;
+}) {
   return service.pricePackage ?? service.price ?? 0;
 }
 
