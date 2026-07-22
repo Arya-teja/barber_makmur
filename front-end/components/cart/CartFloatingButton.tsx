@@ -11,7 +11,10 @@ import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/lib/utils/formatters";
 import { useCart } from "@/components/cart/CartProvider";
 
-function getServicePrice(service: { price?: number; pricePackage?: number | null }) {
+function getServicePrice(service: {
+  price?: number;
+  pricePackage?: number | null;
+}) {
   return service.pricePackage ?? service.price ?? 0;
 }
 
