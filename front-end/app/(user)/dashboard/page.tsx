@@ -16,25 +16,25 @@ export default async function UserDashboardPage() {
     ...bookings.slice(0, 1).map((booking) => ({
       id: `booking-${booking.id}`,
       title:
-        booking.status === "confirmed" || booking.status === "completed"
+        booking.status === "confirmed"
           ? "Booking dikonfirmasi"
           : "Booking menunggu konfirmasi",
       description: `${booking.serviceName} • ${booking.date} ${booking.time}`,
       variant:
-        booking.status === "confirmed" || booking.status === "completed"
+        booking.status === "confirmed"
           ? "success"
           : "error",
     })),
     ...payments.slice(0, 1).map((payment) => ({
       id: `payment-${payment.id}`,
       title:
-        payment.status === "success"
+        payment.status === "paid"
           ? "Pembayaran sukses"
           : payment.status === "failed"
             ? "Pembayaran gagal"
             : "Pembayaran menunggu",
       description: `${payment.serviceName} • ${formatCurrency(payment.amount)}`,
-      variant: payment.status === "success" ? "success" : "error",
+      variant: payment.status === "paid" ? "success" : "error",
     })),
   ];
 
